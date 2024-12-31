@@ -189,3 +189,27 @@
         ))
     )
 )
+
+;; Validator Management
+(define-public (register-validator (expertise (list 10 uint)))
+    (let
+        ((caller tx-sender)
+         (user-profile (unwrap! (get-user-profile caller) ERR-NOT-REGISTERED)))
+        (asserts! (>= (get reputation-score user-profile) (var-get min-validator-rating)) ERR-NOT-AUTHORIZED)
+        (ok (begin
+            (map-set ValidatorRegistry
+                { validator: caller }
+                {
+                    expertise: expertise,
+                    validations-performed: u0,
+                    rating: u100,
+                    active-since: block-height
+                }
+            )
+            (map-set UserProfiles
+                { user: caller }
+                (merge user-profile { is-validator: true })
+            )
+        ))
+    )
+)
