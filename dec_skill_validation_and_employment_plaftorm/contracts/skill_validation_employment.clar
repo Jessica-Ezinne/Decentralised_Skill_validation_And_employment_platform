@@ -66,3 +66,9 @@
         active-since: uint
     }
 )
+
+;; Data variables for contract management
+(define-data-var contract-owner principal tx-sender)
+(define-data-var next-skill-id uint u1)
+(define-data-var platform-fee uint u100)
+(define-data-var min-validator-rating uint u75)
