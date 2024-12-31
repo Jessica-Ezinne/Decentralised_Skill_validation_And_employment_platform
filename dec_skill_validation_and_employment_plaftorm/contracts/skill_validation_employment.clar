@@ -72,3 +72,24 @@
 (define-data-var next-skill-id uint u1)
 (define-data-var platform-fee uint u100)
 (define-data-var min-validator-rating uint u75)
+
+;; Read-only functions
+(define-read-only (get-user-profile (user principal))
+    (map-get? UserProfiles { user: user })
+)
+
+(define-read-only (get-skill (skill-id uint))
+    (map-get? Skills { skill-id: skill-id })
+)
+
+(define-read-only (get-user-skill (user principal) (skill-id uint))
+    (map-get? UserSkills { user: user, skill-id: skill-id })
+)
+
+(define-read-only (get-employment-record (user principal) (employer principal))
+    (map-get? EmploymentRecords { user: user, employer: employer })
+)
+
+(define-read-only (get-validator-info (validator principal))
+    (map-get? ValidatorRegistry { validator: validator })
+)
