@@ -234,3 +234,11 @@
         (ok (var-set platform-fee new-fee))
     )
 )
+
+(define-public (update-min-validator-rating (new-rating uint))
+    (begin
+        (asserts! (is-eq tx-sender (var-get contract-owner)) ERR-NOT-AUTHORIZED)
+        (asserts! (and (>= new-rating u0) (<= new-rating u100)) ERR-INVALID-RATING)
+        (ok (var-set min-validator-rating new-rating))
+    )
+)
