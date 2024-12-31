@@ -226,3 +226,11 @@
         ))
     )
 )
+
+;; Contract Management
+(define-public (update-platform-fee (new-fee uint))
+    (begin
+        (asserts! (is-eq tx-sender (var-get contract-owner)) ERR-NOT-AUTHORIZED)
+        (ok (var-set platform-fee new-fee))
+    )
+)
