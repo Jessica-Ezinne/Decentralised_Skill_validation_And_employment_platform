@@ -143,3 +143,25 @@
         ))
     )
 )
+
+;; Skill Validation
+(define-public (validate-skill (user principal) (skill-id uint))
+    (let
+        ((validator tx-sender)
+         (validator-info (unwrap! (get-validator-info validator) ERR-NOT-AUTHORIZED))
+         (user-skill (unwrap! (get-user-skill user skill-id) ERR-INVALID-SKILL)))
+        (asserts! (>= (get rating validator-info) (var-get min-validator-rating)) ERR-NOT-AUTHORIZED)
+        (asserts! (is-none (index-of (get validators user-skill) validator)) ERR-ALREADY-VALIDATED)
+        (ok (map-set UserSkills
+            { user: user, skill-id: skill-id }
+            {
+                status: (get status user-skill),
+                validation-count: (+ (get validation-count user-skill) u1),
+                last-updated: block-height,
+                validators: (unwrap! (as-max-len? 
+                    (append (get validators user-skill) validator) u50
+                ) ERR-INVALID-STATUS)
+            }
+        ))
+    )
+)
