@@ -114,3 +114,32 @@
         ))
     )
 )
+
+;; Skill Management
+(define-public (register-skill 
+    (name (string-utf8 100))
+    (category (string-utf8 50))
+    (description (string-utf8 500))
+    (required-validations uint)
+)
+    (let
+        ((skill-id (var-get next-skill-id))
+         (caller tx-sender))
+        (asserts! (is-some (get-user-profile caller)) ERR-NOT-REGISTERED)
+        (asserts! (> required-validations u0) ERR-INVALID-SKILL)
+        (ok (begin
+            (map-set Skills
+                { skill-id: skill-id }
+                {
+                    name: name,
+                    category: category,
+                    description: description,
+                    required-validations: required-validations,
+                    created-by: caller,
+                    creation-time: block-height
+                }
+            )
+            (var-set next-skill-id (+ skill-id u1))
+        ))
+    )
+)
