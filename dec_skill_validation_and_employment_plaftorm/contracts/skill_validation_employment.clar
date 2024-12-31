@@ -93,3 +93,24 @@
 (define-read-only (get-validator-info (validator principal))
     (map-get? ValidatorRegistry { validator: validator })
 )
+
+;; Public functions
+
+;; User Profile Management
+(define-public (register-user (name (string-utf8 50)) (bio (string-utf8 500)))
+    (let
+        ((caller tx-sender))
+        (asserts! (is-none (get-user-profile caller)) ERR-ALREADY-REGISTERED)
+        (ok (map-set UserProfiles
+            { user: caller }
+            {
+                name: name,
+                bio: bio,
+                registration-time: block-height,
+                reputation-score: u100,
+                total-validations: u0,
+                is-validator: false
+            }
+        ))
+    )
+)
