@@ -213,3 +213,16 @@
         ))
     )
 )
+
+;; Reputation Management
+(define-public (update-validator-rating (validator principal) (new-rating uint))
+    (let
+        ((caller tx-sender)
+         (validator-info (unwrap! (get-validator-info validator) ERR-NOT-REGISTERED)))
+        (asserts! (and (>= new-rating u0) (<= new-rating u100)) ERR-INVALID-RATING)
+        (ok (map-set ValidatorRegistry
+            { validator: validator }
+            (merge validator-info { rating: new-rating })
+        ))
+    )
+)
