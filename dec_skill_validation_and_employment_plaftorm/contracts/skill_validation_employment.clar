@@ -165,3 +165,27 @@
         ))
     )
 )
+
+;; Employment Record Management
+(define-public (add-employment-record
+    (employer principal)
+    (position (string-utf8 100))
+    (start-date uint)
+    (end-date uint)
+)
+    (let
+        ((user tx-sender))
+        (asserts! (is-some (get-user-profile user)) ERR-NOT-REGISTERED)
+        (asserts! (>= end-date start-date) ERR-INVALID-STATUS)
+        (ok (map-set EmploymentRecords
+            { user: user, employer: employer }
+            {
+                position: position,
+                start-date: start-date,
+                end-date: end-date,
+                status: u"pending",
+                verified: false
+            }
+        ))
+    )
+)
